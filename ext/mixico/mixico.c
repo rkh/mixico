@@ -6,6 +6,8 @@
 //
 #include <ruby.h>
 
+static VALUE mixin_eval, mixout_eval;
+
 static VALUE
 rb_mod_disable_mixin(VALUE module, VALUE super)
 {
@@ -45,4 +47,23 @@ void Init_mixico()
 {
   rb_define_method(rb_cModule, "disable_mixin", rb_mod_disable_mixin, 1);
   rb_define_method(rb_cModule, "enable_mixin", rb_mod_enable_mixin, 1);
+
+  rb_eval_string(
+    "class Proc\n" \
+    "  def mixin mod\n" \
+    "    binding.eval('self').extend mod\n" \
+    "  end\n" \
+    "  def mixout mod\n" \
+    "    (class << binding.eval('self'); self end).disable_mixin mod\n" \
+    "  end\n" \
+    "end\n" \
+    "\n" \
+    "class Module\n" \
+    "  def mix_eval mod, &blk\n" \
+    "    blk.mixin mod\n" \
+    "    blk.call\n" \
+    "    blk.mixout mod\n" \
+    "  end\n" \
+    "end\n" \
+  );
 }
