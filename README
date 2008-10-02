@@ -6,15 +6,18 @@ there's no way i'm keeping this short.  i'm sorry, but you're going to
 have to really read this once.
 
 % installation %
-
 like so:
 
   $ ruby setup.rb config
   $ ruby setup.rb setup
   $ sudo ruby setup.rb install
 
-% the long of it %
+% source code %
+mixico is written in c.  it is very quick (basically atomic.)
 
+it is released under an MIT license. see COPYING.
+
+% the long of it %
 this is just a small bit of code and it has yet to prove itself, but
 i believe this discovery could spawn a small following.  i assure you:
 it is practical.
