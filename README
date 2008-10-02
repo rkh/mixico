@@ -1,0 +1,167 @@
+% mixico %
+disable and re-enable mixins for ruby.
+
+% quick summary %
+there's no way i'm keeping this short.  i'm sorry, but you're going to
+have to really read this once.
+
+% installation %
+
+like so:
+
+  $ ruby setup.rb config
+  $ ruby setup.rb setup
+  $ sudo ruby setup.rb install
+
+% the long of it %
+
+this is just a small bit of code and it has yet to prove itself, but
+i believe this discovery could spawn a small following.  i assure you:
+it is practical.
+
+while mining through the ftp site of the recently departed guy decoux,
+an exquisite french hacker, i read of a lost module for reparenting 
+modules in different directions.  this 'prop' extension is most heavily
+elucidated in a thread beginning with [ruby-talk:20293].  the extension
+itself is vanished, so we are left with a sort example and a diagram.
+
+the diagram appears in a reply to hal fulton (who asks where this
+'insert' method is that guy is using between modules):
+
+from [ruby-talk:20296]:
+
+  >>>>> "H" == Hal E Fulton <hal9000 / hypermetrics.com> writes:
+  
+  H> What is "insert" anyway? Did you mean "include"
+  H> or did I miss something?
+  
+   No, this not "include" but really "insert" (i.e. another way)
+  
+   For 2 classes A < B you have
+  
+  
+                     extend put the class here
+                               |
+                               |
+                               |
+                               v
+                    meta-A <========= meta-B
+                      ^                  ^
+      insert put      |                  |
+      the class ====> |                  |
+      here            |                  |
+                      A    <=========    B
+                               ^
+                               |
+                               |
+                      include put the class here
+  
+   You have method specifics to the metaclass
+
+even if we had the code for 'prop', we wouldn't be able to build
+it.  these messages date back to 25 aug 2001, when ruby 1.6.4 was
+current.
+
+i began trying to recreate this intriguing work by trying to get
+guy's example code to work.  while i've not yet completed that work,
+i stumbled upon another idea.
+
+when a module is mixed into an object, the module itself appears
+to be in the inheritance chain (Module.ancestors):
+
+  module Mixin; end
+  
+  class GuineaPig; end
+
+  sylvain = GuineaPig.new
+  sylvain.extend Mixin
+  class << sylvain
+    p ancestors
+  end
+
+the printed list for test subject 'sylvain' is:
+[Mixin, GuineaPig, Object, Kernel]
+
+this means 'sylvain' will respond to methods in the Mixin module
+first, then in the GuineaPig class and so on up.  however, the
+Mixin module isn't REALLY in the inheritance chain.  ruby creates
+an object of type T_ICLASS that is a proxy class.  a symbolic link
+to the Mixin module.
+
+  sylvain ==> #<Mixin> ==> GuineaPig ==> Object ==> Kernel
+
+the #<Mixin> object is useless in actual Ruby.  you can't print it out.
+it doesn't have any methods.  you can pass it around in a variable, but
+that's it.
+
+again, it's a symbolic link to the Mixin module and its superclass is
+GuineaPig.  one of these objects is created every time you mixin.
+
+on to this:
+
+  require 'mixico'
+
+so, mixico adds two methods: disable_mixin and enable_mixin.
+
+  m = sylvain.disable_mixin Mixin
+  class << sylvain
+    p ancestors
+  end
+
+which prints: [GuineaPig, Object, Kernel]
+  
+  sylvain.enable_mixin m
+  class << sylvain
+    p ancestors
+  end
+
+which prints: [Mixin, GuineaPig, Object, Kernel]
+
+% how is this practical? %
+
+my immediate concern is to stop using instance_eval.  i use it in
+markaby a lot.  and it gets used once in shoes.
+
+instance_eval can help give you syntax like this:
+
+  Markaby.html do
+    head do
+      title "feral cat colonies worldwide"
+      meta :name => "ROBOTS", :content => "ALL"
+    end
+  end
+
+nice, readable tags, right?
+
+it's nice because instance_eval redirects all your methods inside
+the block to a specific object.  the problem is that it alters `self`
+and redirects instance and class variables as well.
+
+if you've got an instance variable you want to use inside the block,
+you need to save it in a local variable before entering the block.
+same with `self`.
+
+  def to_html
+    obj = self
+    Markaby.html do
+      head do
+        title obj.friendly_title
+        meta :name => "ROBOTS", :content => "ALL"
+      end
+    end
+  end
+
+this is annoying to remember.  it's often the source of bugs.
+
+mixico, on the other hand, can be used to redirect the methods
+without changing `self` and swallowing up the ivars.
+
+  module Mixin
+    def head ...
+    def title ...
+    def meta ...
+  end
+
+we you enable the mixin with mixico, it'll send the methods through
+the proxy class.  and when you disable it, you're back to normal.
+no sign of the mixin at all.
