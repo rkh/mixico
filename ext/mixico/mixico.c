@@ -61,8 +61,11 @@ void Init_mixico()
     "class Module\n" \
     "  def mix_eval mod, &blk\n" \
     "    blk.mixin mod\n" \
-    "    blk.call\n" \
-    "    blk.mixout mod\n" \
+    "    begin\n" \
+    "      blk.call\n" \
+    "    ensure\n" \
+    "      blk.mixout mod\n" \
+    "    end\n" \
     "  end\n" \
     "end\n" \
   );
