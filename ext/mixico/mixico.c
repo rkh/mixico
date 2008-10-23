@@ -18,6 +18,7 @@ rb_mod_disable_mixin(VALUE module, VALUE super)
     if (BUILTIN_TYPE(p) == T_ICLASS) {
       if (RBASIC(p)->klass == super) {
         RCLASS(kid)->super = RCLASS(p)->super;
+        rb_clear_cache();
         return p;
       }
     }
