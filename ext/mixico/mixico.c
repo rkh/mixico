@@ -18,6 +18,7 @@ rb_mod_disable_mixin(VALUE module, VALUE super)
     if (BUILTIN_TYPE(p) == T_ICLASS) {
       if (RBASIC(p)->klass == super) {
         RCLASS(kid)->super = RCLASS(p)->super;
+        rb_clear_cache_by_class(module);
         return p;
       }
     }
@@ -36,6 +37,7 @@ rb_mod_enable_mixin(VALUE module, VALUE mixin)
   for (p = module; p; p = RCLASS(p)->super) {
     if (RCLASS(p)->super == RCLASS(mixin)->super) {
       RCLASS(p)->super = mixin;
+      rb_clear_cache_by_class(module);
       return RBASIC(mixin)->klass;
     }
   }

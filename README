@@ -106,15 +106,15 @@ on to this:
 
 so, mixico adds two methods: disable_mixin and enable_mixin.
 
-  m = sylvain.disable_mixin Mixin
   class << sylvain
+    @m = disable_mixin Mixin
     p ancestors
   end
 
 which prints: [GuineaPig, Object, Kernel]
   
-  sylvain.enable_mixin m
   class << sylvain
+    enable_mixin @m
     p ancestors
   end
 
