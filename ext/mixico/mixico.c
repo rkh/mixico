@@ -52,6 +52,9 @@ void Init_mixico()
 
   rb_eval_string(
     "class Proc\n" \
+    "  def includes_mixin? mod\n" \
+    "    (class << binding.eval('self'); self end).include? mod\n" \
+    "  end\n" \
     "  def mixin mod\n" \
     "    binding.eval('self').extend mod\n" \
     "  end\n" \
@@ -62,11 +65,15 @@ void Init_mixico()
     "\n" \
     "class Module\n" \
     "  def mix_eval mod, &blk\n" \
-    "    blk.mixin mod\n" \
-    "    begin\n" \
+    "    if blk.includes_mixin? mod\n" \
     "      blk.call\n" \
-    "    ensure\n" \
-    "      blk.mixout mod\n" \
+    "    else\n" \
+    "      blk.mixin mod\n" \
+    "      begin\n" \
+    "        blk.call\n" \
+    "      ensure\n" \
+    "        blk.mixout mod\n" \
+    "      end\n" \
     "    end\n" \
     "  end\n" \
     "end\n" \
