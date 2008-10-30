@@ -45,10 +45,35 @@ rb_mod_enable_mixin(VALUE module, VALUE mixin)
   return Qnil;
 }
 
+static VALUE
+rb_mod_mixin_object(VALUE target, VALUE obj)
+{
+  VALUE singleton = rb_singleton_class(obj);
+  NEWOBJ(iclass, struct RClass);
+  OBJSETUP(iclass, rb_cClass, T_ICLASS);
+
+  Check_Type(target, T_MODULE);
+  if (!ROBJECT(obj)->iv_tbl)
+    ROBJECT(obj)->iv_tbl = st_init_numtable();
+
+  iclass->iv_tbl = ROBJECT(obj)->iv_tbl;
+  iclass->m_tbl = RCLASS(singleton)->m_tbl;
+  iclass->super = RCLASS(target)->super;
+  RBASIC(iclass)->klass = singleton;
+
+  OBJ_INFECT(iclass, obj);
+  OBJ_INFECT(iclass, target);
+  RCLASS(target)->super = iclass;
+  rb_clear_cache_by_class(target);
+
+  return Qnil;
+}
+
 void Init_mixico()
 {
   rb_define_method(rb_cModule, "disable_mixin", rb_mod_disable_mixin, 1);
   rb_define_method(rb_cModule, "enable_mixin", rb_mod_enable_mixin, 1);
+  rb_define_method(rb_cModule, "mixin_an_object", rb_mod_mixin_object, 1);
 
   rb_eval_string(
     "class Proc\n" \
