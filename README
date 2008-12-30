@@ -6,8 +6,11 @@ there's no way i'm keeping this short.  i'm sorry, but you're going to
 have to really read this once.
 
 % installation %
-like so:
+with gem:
+  $ gem sources -a http://gems.github.com
+  $ sudo gem install rkh-mixico
 
+without:
   $ ruby setup.rb config
   $ ruby setup.rb setup
   $ sudo ruby setup.rb install
