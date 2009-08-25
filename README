@@ -171,3 +171,8 @@ without changing `self` and swallowing up the ivars.
 we you enable the mixin with mixico, it'll send the methods through
 the proxy class.  and when you disable it, you're back to normal.
 no sign of the mixin at all.
+
+% maintenance %
+Until _why might reappear someday, this project is maintained by Konstantin Haase (rkh).
+konstantin.mailinglists <at> googlemail <dot> com
+http://github.com/rkh/mixico
