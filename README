@@ -7,8 +7,7 @@ have to really read this once.
 
 % installation %
 with gem:
-  $ gem sources -a http://gems.github.com
-  $ sudo gem install rkh-mixico
+  $ gem install mixico -s http://gemcutter.org
 
 without:
   $ ruby setup.rb config
