@@ -1,6 +1,6 @@
 require 'mkmf'
 
-dir_config("mixico")
-have_library("c", "main")
+# 1.9 compatibility
+$CFLAGS += " -DRUBY_19" if RUBY_VERSION =~ /1.9/
 
-create_makefile("mixico")
+create_makefile("cmixico")

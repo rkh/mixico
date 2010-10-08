@@ -175,3 +175,5 @@ no sign of the mixin at all.
 Until _why might reappear someday, this project is maintained by Konstantin Haase (rkh).
 konstantin.mailinglists <at> googlemail <dot> com
 http://github.com/rkh/mixico
+* updated for Ruby 1.9 by banisterfiend
+http://github.com/banister
