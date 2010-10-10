@@ -90,7 +90,7 @@ rb_mod_mixin_object(VALUE target, VALUE obj)
   return Qnil;
 }
 
-void Init_cmixico()
+void Init_mixico()
 {
   rb_define_method(rb_cModule, "disable_mixin", rb_mod_disable_mixin, 1);
   rb_define_method(rb_cModule, "enable_mixin", rb_mod_enable_mixin, 1);
