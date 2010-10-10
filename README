@@ -7,7 +7,7 @@ have to really read this once.
 
 % installation %
 with gem:
-  $ gem install mixico -s http://gemcutter.org
+  $ gem install mixico 
 
 without:
   $ ruby setup.rb config
