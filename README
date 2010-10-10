@@ -14,6 +14,9 @@ without:
   $ ruby setup.rb setup
   $ sudo ruby setup.rb install
 
+% documentation %
+http://rubydoc.info/github/rkh/mixico/master
+
 % source code %
 mixico is written in c.  it is very quick (basically atomic.)
 
