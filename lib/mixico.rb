@@ -1,3 +1,7 @@
+# mixico.rb
+# added by John Mair (banisterfiend) 2010
+# License: MIT
+
 direc = File.dirname(__FILE__)
 
 begin

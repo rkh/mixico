@@ -9,22 +9,6 @@
 
 static VALUE mixin_eval, mixout_eval;
 
-#ifdef RUBY_19
-static VALUE
-class_alloc(VALUE flags, VALUE klass)
-{
-  rb_classext_t *ext = ALLOC(rb_classext_t);
-  NEWOBJ(obj, struct RClass);
-  OBJSETUP(obj, klass, flags);
-  obj->ptr = ext;
-  RCLASS_IV_TBL(obj) = 0;
-  RCLASS_M_TBL(obj) = 0;
-  RCLASS_SUPER(obj) = 0;
-  RCLASS_IV_INDEX_TBL(obj) = 0;
-  return (VALUE)obj;
-}
-#endif
-
 static VALUE
 rb_mod_disable_mixin(VALUE module, VALUE super)
 {
@@ -66,13 +50,8 @@ static VALUE
 rb_mod_mixin_object(VALUE target, VALUE obj)
 {
   VALUE singleton = rb_singleton_class(obj);
+  VALUE iclass = create_class(T_ICLASS, rb_cClass);
 
-#ifdef RUBY_19
-  VALUE iclass = class_alloc(T_ICLASS, rb_cClass);
-#else  
-  NEWOBJ(iclass, struct RClass);
-  OBJSETUP(iclass, rb_cClass, T_ICLASS);
-#endif
   Check_Type(target, T_MODULE);
   if (!RCLASS_IV_TBL(obj))
     RCLASS_IV_TBL(obj) = st_init_numtable();
