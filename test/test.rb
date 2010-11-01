@@ -3,7 +3,9 @@ require 'rubygems'
 require 'bacon'
 require "#{direc}/../lib/mixico"
 
-describe "mix_eval" do
+puts "Testing Mixico version #{Mixico::VERSION}..."
+puts "Ruby version #{RUBY_VERSION}"
+describe Mixico do
   before do
     @m = Module.new {
       def hello
